@@ -17,19 +17,7 @@ def draw_registration_result(source, target):
                                       lookat=[1.6784, 2.0612, 1.4451],
                                       up=[-0.3402, -0.9189, -0.1996])
 
-
-def main(method='generalized_ICP'):
-    source = generate_shape(shape='rectangle')
-    target = copy.deepcopy(source).translate((500, 500, 500))
-
-    # Compute covariance matrices for source and target point clouds
-    source.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-    o3d.geometry.PointCloud.estimate_covariances(source)
-    target.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-    o3d.geometry.PointCloud.estimate_covariances(target)
-
-    draw_registration_result(source, target)
-
+def get_registration_transformation(method, source, target):
     #reg_p2p = o3d.pipelines.registration.registration_icp(
     #    pc_1, pc_2, threshold, trans_init,
     #    o3d.pipelines.registration.TransformationEstimationPointToPoint())
@@ -45,6 +33,36 @@ def main(method='generalized_ICP'):
         source, target, max_correspondence_distance=500,
             estimation_method=o3d.pipelines.registration.TransformationEstimationForGeneralizedICP()
         )
+    #elif method == 'FGR':
+        # fast global registration
+
+        # Extract FPFH features
+        #source_fpfh = o3d.pipelines.registration.compute_fpfh_feature(source,
+        #                                                              o3d.geometry.KDTreeSearchParamHybrid(radius=0.2,
+        #                                                                                                           max_nn=100))
+        #target_fpfh = o3d.pipelines.registration.compute_fpfh_feature(target,
+        #                                                              o3d.geometry.KDTreeSearchParamHybrid(radius=0.2,
+        #                                                                                                   max_nn=100))
+        # FGR registration
+        #target_T_source = \
+        #    o3d.pipelines.registration.registration_fgr_based_on_feature_matching(source, target, source_fpfh, target_fpfh)
+
+    return target_T_source
+
+
+def main(method='generalized_ICP'):
+    source = generate_shape(shape='rectangle')
+    target = copy.deepcopy(source).translate((500, 500, 500))
+
+    # Compute covariance matrices for source and target point clouds
+    source.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+    o3d.geometry.PointCloud.estimate_covariances(source)
+    target.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+    o3d.geometry.PointCloud.estimate_covariances(target)
+
+    draw_registration_result(source, target)
+
+    target_T_source = get_registration_transformation(method, source, target)
 
     print(target_T_source.transformation)
 
