@@ -95,7 +95,7 @@ def generate_shape(shape, num_points=10000):
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(point_cloud)
     o3d.visualization.draw_geometries([pcd])
-
+    return pcd
 
 def main():
     shape = 'sphere'
