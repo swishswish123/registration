@@ -72,34 +72,30 @@ def generate_shape(shape, num_points=10000):
         height = np.random.randint(low=1, high=10000)
         depth = np.random.randint(low=1, high=10000)
         point_cloud = generate_rectangle(width=width, height=height, depth=depth, num_points=num_points)
-
     elif shape=='cube':
         length = np.random.randint(low=1, high=10000)
         point_cloud = generate_rectangle(width=length, height=length, depth=length, num_points=num_points)
     elif shape == 'sphere':
         radius = np.random.randint(low=1, high=100)
         point_cloud = generate_sphere(radius=radius, num_points=num_points)
-
-        #point_cloud[:,0] *= 2
-        #point_cloud[:, 0] *= 5
-        #point_cloud[:, 0] *= 3
-
     elif shape == 'ellipse':
         width = np.random.randint(low=1, high=10000)
         height = np.random.randint(low=1, high=10000)
         depth = np.random.randint(low=1, high=10000)
         point_cloud = generate_ellipse(width=width, height=height, depth=depth)
     else:
-        return None
+        point_cloud = np.random.uniform(low=0, high=10, size=(100,3))
 
+    print(point_cloud.shape)
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(point_cloud)
     o3d.visualization.draw_geometries([pcd])
     return pcd
 
+
 def main():
-    shape = 'sphere'
-    generate_shape(shape)
+    shape = 'ellipse'
+    generate_shape(shape='')
 
 
 if __name__=='__main__':

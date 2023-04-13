@@ -50,9 +50,7 @@ def get_registration_transformation(method, source, target):
     return target_T_source
 
 
-def main(method='generalized_ICP'):
-    source = generate_shape(shape='rectangle')
-    target = copy.deepcopy(source).translate((500, 500, 500))
+def perform_registration(source, target, method='generalized_ICP'):
 
     # Compute covariance matrices for source and target point clouds
     source.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
@@ -69,9 +67,16 @@ def main(method='generalized_ICP'):
     transformed_source = source.transform(target_T_source.transformation)
     draw_registration_result(transformed_source, target)
 
-    return
+    return target_T_source.transformation
 
 
-if __name__=='__main__':
+def main(method='ICP'):
+    source = generate_shape(shape='rectangle')
+    target = copy.deepcopy(source).translate((500, 500, 500))
+
+    perform_registration(source, target, method=method)
+
+
+if __name__ == '__main__':
 
     main(method='ICP')
